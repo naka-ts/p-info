@@ -1,1 +1,129 @@
-<p>...</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Notice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        mono: ['Space Grotesk', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .bg-plus-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6z' fill='%239CA3AF' fill-opacity='0.08'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-slate-100 bg-plus-pattern min-h-screen text-slate-800 flex items-center justify-center p-4 antialiased selection:bg-slate-200 font-sans">
+
+    <div id="app" class="w-full max-w-xl">
+        <!-- Content will be injected dynamically via JavaScript -->
+    </div>
+
+    <script>
+        function renderPage() {
+            const params = new URLSearchParams(window.location.search);
+            const app = document.getElementById('app');
+
+            // Check if required query parameters exist
+            const host = params.get('host');
+            const type = params.get('type');
+            const code = params.get('code');
+            const time = params.get('time');
+            const full = params.get('full');
+            const method = params.get('method') || 'GET';
+
+            const hasAnyParam = Array.from(params.keys()).length > 0;
+
+            if (!hasAnyParam) {
+                // Blank state when no parameters exist
+                app.innerHTML = `
+                    <div class="text-center py-20">
+                        <p class="text-slate-400 font-mono text-sm tracking-wide">Nothing happened.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Format timestamp if available
+            let formattedTime = 'N/A';
+            if (time) {
+                const parsedTime = parseInt(time, 10);
+                if (!isNaN(parsedTime)) {
+                    formattedTime = new Date(parsedTime).toUTCString();
+                } else {
+                    formattedTime = time;
+                }
+            }
+
+            // Clean up type format (replace underscores with spaces)
+            const formattedType = type ? type.replace(/_/g, ' ') : 'Service Notice';
+
+            app.innerHTML = `
+                <div class="bg-white rounded-3xl p-8 sm:p-10 text-center">
+                    <!-- Main Header / Title -->
+                    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 capitalize mb-4">
+                        ${formattedType}
+                    </h1>
+
+                    <!-- Main Large Info Text -->
+                    <p class="text-base sm:text-lg text-slate-600 font-medium leading-relaxed max-w-lg mx-auto mb-8">
+                        This project is currently unavailable. It may be permanently removed or temporarily suspended in the near future. If you need further clarification, please contact the administrator.
+                    </p>
+
+                    <!-- Parameter Breakdown Details -->
+                    <div class="bg-slate-50 rounded-2xl p-5 font-mono text-xs space-y-3 text-slate-600 text-left mb-8">
+                        <div class="flex justify-between items-center border-b border-slate-200/60 pb-2.5">
+                            <span class="text-slate-400">Host Domain:</span>
+                            <span class="font-semibold text-slate-800 break-all">${host || 'N/A'}</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-200/60 pb-2.5">
+                            <span class="text-slate-400">Request Method:</span>
+                            <span class="font-semibold text-slate-800 uppercase">${method}</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-200/60 pb-2.5">
+                            <span class="text-slate-400">Reason Code:</span>
+                            <span class="font-semibold text-slate-800">${code || 'N/A'}</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-200/60 pb-2.5">
+                            <span class="text-slate-400">Timestamp:</span>
+                            <span class="text-slate-700">${formattedTime}</span>
+                        </div>
+                        ${full ? `
+                        <div class="pt-1">
+                            <span class="text-slate-400 block mb-1">Full Target URL:</span>
+                            <a href="${full}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline break-all block">
+                                ${full}
+                            </a>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Action / Contact Footer -->
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 text-xs text-slate-500">
+                        <span>Need assistance or clarification?</span>
+                        <a href="support.html" class="w-full sm:w-auto px-6 py-3 bg-slate-900 text-white font-medium rounded-2xl hover:bg-slate-800 transition-colors inline-block">
+                            Contact Admin
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Run on load
+        window.addEventListener('DOMContentLoaded', renderPage);
+    </script>
+</body>
+</html>
